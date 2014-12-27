@@ -8,6 +8,7 @@
 #include <string.h>
 #include <time.h>
 #include <errno.h>
+#include <unistd.h>
 
 int main(int argc, char** argv)
 {
@@ -54,5 +55,6 @@ int main(int argc, char** argv)
 		printf("%s\n", buf);
 		printf("test timeout!\n");
 	}
+	close(sockfd);
 	return 0;
 }
