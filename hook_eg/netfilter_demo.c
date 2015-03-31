@@ -26,9 +26,9 @@ band_status b_status;
 #define IS_BANDIP(status) (status.band_ip)
 /*nf sock 选项扩展操作*/
 static int nf_sockopt_set(struct sock *sock,
-						  int cmd,
-						  void __user *user,
-						  unsigned int len)
+		int cmd,
+		void __user *user,
+		unsigned int len)
 {
 	int ret = 0;
 	struct band_status status;
@@ -96,9 +96,9 @@ ERROR:
 
 /*nf sock 操作扩展命令操作*/
 static int nf_sockopt_get(struct sock *sock,
-		                  cmd,
-						  void __user *user,
-						  unsigned int len)
+		cmd,
+		void __user *user,
+		unsigned int len)
 {
 	int ret = 0;
 
@@ -135,10 +135,10 @@ ERROR:
 
 /*在LOCAL_OUT上挂钩子*/
 static unsigned int nf_hook_out(unsigned int hooknum,
-								struct sk_buff **skb,
-								const struct net_device *in,
-								const struct net_device *out,
-								int (*okfn)(struct sk_buff*))
+		struct sk_buff **skb,
+		const struct net_device *in,
+		const struct net_device *out,
+		int (*okfn)(struct sk_buff*))
 {
 	struct sk_buff *sk = *skb;
 	struct iphdr *iph = ip_hdr(sk);
@@ -156,10 +156,10 @@ static unsigned int nf_hook_out(unsigned int hooknum,
 
 /*在LOCAL_IN上挂钩子*/
 static unsigned int nf_hook_in(unsigned int hooknum,
-							   struct sk_buff **skb,
-							   const struct net_device *in,
-							   const struct net_device *out,
-							   int (*okfn)(struct sk_buff*))
+		struct sk_buff **skb,
+		const struct net_device *in,
+		const struct net_device *out,
+		int (*okfn)(struct sk_buff*))
 {
 	struct sk_buff *sk = *skb;
 	struct iphdr *iph = ip_hdr(sk);
