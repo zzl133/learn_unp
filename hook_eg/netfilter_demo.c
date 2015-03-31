@@ -37,7 +37,7 @@ static int nf_sockopt_set(struct sock *sock,
 	if(!capable(CAP_NET_ADMIN)) //没有足够权限
 	{
 		ret = -EPERM;
-		goto ERROR:
+		goto ERROR;
 	}
 
 	/*从用户空间复制数据*/
@@ -96,7 +96,7 @@ ERROR:
 
 /*nf sock 操作扩展命令操作*/
 static int nf_sockopt_get(struct sock *sock,
-		cmd,
+		int cmd,
 		void __user *user,
 		unsigned int len)
 {
@@ -106,7 +106,7 @@ static int nf_sockopt_get(struct sock *sock,
 	if(!capable(CAP_NET_ADMIN)) //没有足够权限
 	{
 		ret = -EPERM;
-		goto ERROR:
+		goto ERROR;
 	}
 
 	/*将数据从内核空间复制到用户空间*/
@@ -211,16 +211,19 @@ static unsigned int nf_hook_in(unsigned int hooknum,
 static struct nf_hook_ops nfin = 
 {
 	.hook = nf_hook_in,
-	.hooknum = NF_IP_LOCAL_IN,
+	//.hooknum = NF_IP_LOCAL_IN,
+	.hooknum = NF_INET_LOCAL_IN,
 	.pf = PF_INET,
-	.priority = NF_IP_LOCAL_OUT
+	//.priority = NF_IP_LOCAL_OUT
+	.priority = NF_INET_LOCAL_OUT
 };
 
 /*初始化nfout钩子在钩子LOCAL_OUT*/
 static struct nf_hook_ops nfout = 
 {
 	.hook = nf_hook_out,
-	.hooknum = NF_IP_LOCAL_OUT,
+	//.hooknum = NF_IP_LOCAL_OUT,
+	.hooknum = NF_INET_LOCAL_OUT,
 	.pf = PF_INET,
 	.priority = NF_IP_PRI_FIRST
 };
