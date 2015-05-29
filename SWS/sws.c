@@ -27,6 +27,36 @@
 #include <unistd.h>
 #include <sys/stat.h>
 #include <fcntl.h>
+#include <wait.h>
+#include "sws_work_process.h"
+
+
+int sws_init_socket(int *listen_fd, struct sockaddr_in *server_addr)
+{
+	*listen_fd = socket(AF_INET, SOCK_STREAM, 0);
+	if(listen_fd < 0)
+	{
+		perror("socket");
+		return -1;
+	}
+
+	printf("%d\n", *listen_fd);
+
+	if(sws_setnonblocking(*listen_fd) < 0)
+		return -1;
+
+	server_addr->sin_family = AF_INET;
+	server_addr->sin_port = htons(8080);
+	server_addr->sin_addr.s_addr = htonl(INADDR_ANY);
+
+	if(bind(*listen_fd, (struct sockaddr*)&server_addr, sizeof(server_addr)) < 0)
+		return -1;
+
+	listen(*listen_fd, 20);
+
+	return 1;
+}
+
 
 /* 
  * ===  FUNCTION  ==================================
@@ -34,44 +64,32 @@
  *  Description:  
  * =================================================
  */
-int main ( int argc, char *argv[] )
+int main ( void )
 {
-	int sockfd, clientfd;	
-	struct sockaddr_in seraddr, cliaddr;
+	int listen_fd;	
+	struct sockaddr_in server_addr;
 
-	sockfd = socket(AF_INET, SOCK_STREAM, 0);
-	if(sockfd < 0)
+    if( sws_init_socket(&listen_fd, &server_addr) < 0 )
 		return -1;
 
-	seraddr.sin_family = AF_INET;
-	seraddr.sin_addr.s_addr = inet_addr("127.0.0.1");
-	seraddr.sin_port = htons(8080);
-	int res = bind(sockfd, (struct sockaddr*)&seraddr, sizeof(seraddr));
-	if(res < 0)
-		return -1;
-	listen(sockfd, 20);
-	socklen_t len = sizeof(cliaddr);
-	char msg[1024] = {'\0'};
+	pid_t pid = fork();
 
-	while(1)
+	if(pid < 0)
 	{
-		printf("in accept\n");
-		memset(msg, 0, sizeof(msg));
-		clientfd = accept(sockfd, (struct sockaddr*)&cliaddr, &len);
-		printf("after accept\n");
-		recv(clientfd, msg, sizeof(msg), 0);
-		printf("%s\n", msg);
-		int fp = open("./index.html", O_RDONLY, 0666);
-		char buf[1024] = {'\0'};
-		char bufall[1100] = {'\0'}; 
-		read(fp, buf, sizeof(buf));
-		strcat(bufall, "HTTP/1.0 200 OK\r\n");
-		strcat(bufall, "Content-type:text/html\r\n\r\n");
-		strcat(bufall, buf);
-		send(clientfd, bufall, strlen(bufall), 0);
-		close(fp);
-		close(clientfd);
+		return -1;
+	}
+	if(pid == 0)
+	{
+		sws_work_process(&listen_fd, &server_addr);
+		exit(0);
+	}
+	else 
+	{
+		close(listen_fd);
+
+		if(wait(NULL) < 0)
+			return -1;
 	}
 
-	return EXIT_SUCCESS;
+	return 0;
 }
