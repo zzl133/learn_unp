@@ -40,16 +40,11 @@ int sws_init_socket(int *listen_fd, struct sockaddr_in *server_addr)
 		return -1;
 	}
 
-	printf("%d\n", *listen_fd);
-
-	if(sws_setnonblocking(*listen_fd) < 0)
-		return -1;
-
 	server_addr->sin_family = AF_INET;
-	server_addr->sin_port = htons(8080);
+	server_addr->sin_port = htons(8866);
 	server_addr->sin_addr.s_addr = htonl(INADDR_ANY);
 
-	if(bind(*listen_fd, (struct sockaddr*)&server_addr, sizeof(server_addr)) < 0)
+	if(bind(*listen_fd, (struct sockaddr*)server_addr, sizeof(struct sockaddr_in)) < 0)
 		return -1;
 
 	listen(*listen_fd, 20);
@@ -67,6 +62,7 @@ int sws_init_socket(int *listen_fd, struct sockaddr_in *server_addr)
 int main ( void )
 {
 	int listen_fd;	
+	int status;
 	struct sockaddr_in server_addr;
 
     if( sws_init_socket(&listen_fd, &server_addr) < 0 )
@@ -81,14 +77,15 @@ int main ( void )
 	if(pid == 0)
 	{
 		sws_work_process(&listen_fd, &server_addr);
+
 		exit(0);
 	}
 	else 
 	{
 		close(listen_fd);
 
-		if(wait(NULL) < 0)
-			return -1;
+		waitpid(pid, &status, WUNTRACED | WCONTINUED);
+
 	}
 
 	return 0;

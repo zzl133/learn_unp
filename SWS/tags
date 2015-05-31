@@ -1,0 +1,17 @@
+!_TAG_FILE_FORMAT	2	/extended format; --format=1 will not append ;" to lines/
+!_TAG_FILE_SORTED	1	/0=unsorted, 1=sorted, 2=foldcase/
+!_TAG_PROGRAM_AUTHOR	Darren Hiebert	/dhiebert@users.sourceforge.net/
+!_TAG_PROGRAM_NAME	Exuberant Ctags	//
+!_TAG_PROGRAM_URL	http://ctags.sourceforge.net	/official site/
+!_TAG_PROGRAM_VERSION	5.9~svn20110310	//
+BUF_SIZE	sws_work_process.c	10;"	d	file:
+CC	Makefile	/^CC = gcc$/;"	m
+MAXCLIENT	sws_work_process.c	11;"	d	file:
+OBJS	Makefile	/^OBJS = sws.o sws_work_process.o sws_http_request.o$/;"	m
+__SWS_HTTP_REQUEST_H__	sws_http_request.h	3;"	d
+__SWS_WORK_PROCESS_H__	sws_work_process.h	3;"	d
+main	sws.c	/^int main ( void )$/;"	f
+sws_init_socket	sws.c	/^int sws_init_socket(int *listen_fd, struct sockaddr_in *server_addr)$/;"	f
+sws_request_to_user	sws_http_request.c	/^void sws_request_to_user(int *client_fd)$/;"	f
+sws_setnonblocking	sws_work_process.c	/^int sws_setnonblocking(int listen_fd)$/;"	f
+sws_work_process	sws_work_process.c	/^int sws_work_process(int *listen_fd, struct sockaddr_in *server_addr)$/;"	f

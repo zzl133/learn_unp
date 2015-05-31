@@ -4,6 +4,7 @@
 #include <errno.h>
 #include <sys/epoll.h>
 #include "sws_work_process.h"
+#include "sws_http_request.h"
 
 
 #define BUF_SIZE 10000
@@ -46,6 +47,7 @@ int sws_work_process(int *listen_fd, struct sockaddr_in *server_addr)
 	int sws_fd_count;
 	int i;
 
+	sws_setnonblocking(*listen_fd);
 
 	sin_size = sizeof(client_addr);
 
@@ -82,11 +84,27 @@ int sws_work_process(int *listen_fd, struct sockaddr_in *server_addr)
 				//request
 				client_fd = events[i].data.fd;
 
-				sws_request_to_user(&client_fd);
+				read(client_fd, buf, sizeof(buf));
+				printf("%s\n", buf);
+
+				ev.data.fd = client_fd;
+				ev.events = EPOLLOUT|EPOLLET;
+
+				epoll_ctl(epfd, EPOLL_CTL_MOD, client_fd, &ev);
+
 			}
 			else if (events[i].events & EPOLLOUT) 
 			{
 				//out
+				client_fd = events[i].data.fd;
+
+				sws_request_to_user(&client_fd);
+
+				ev.data.fd = client_fd;
+
+				epoll_ctl(epfd, EPOLL_CTL_DEL, client_fd, &ev);
+
+				close(client_fd);
 			}
 		}
 	}
