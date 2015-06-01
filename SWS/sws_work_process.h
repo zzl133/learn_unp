@@ -6,6 +6,6 @@
 
 extern int sws_setnonblocking(int listen_fd);
 
-extern int sws_work_process(int *listen_fd, struct sockaddr_in *server_addr);
+extern int sws_work_process(int *listen_fd);
 
 #endif /*__SWS_WORK_PROCESS_H__*/

@@ -76,7 +76,7 @@ int main ( void )
 	}
 	if(pid == 0)
 	{
-		sws_work_process(&listen_fd, &server_addr);
+		sws_work_process(&listen_fd);
 
 		exit(0);
 	}

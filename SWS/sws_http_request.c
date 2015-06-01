@@ -3,10 +3,12 @@
 #include <string.h>
 #include <unistd.h>
 #include "sws_http_request.h"
+#include "sws.h"
 
 
-void sws_request_to_user(int *client_fd)
+void sws_request_to_user(sws_session_t *sws_session)
 {
+#if 1
 	char sws_buf[1024];
 
 	bzero(sws_buf, sizeof(sws_buf));
@@ -16,9 +18,10 @@ void sws_request_to_user(int *client_fd)
 	strcat(sws_buf, "Content-type:text/html");
 	strcat(sws_buf, "\r\n\r\n");
 	strcat(sws_buf, "HelloWorld!");
+
 	/*printf("sws_buf = %s\n", sws_buf);*/
 
-	write(*client_fd, sws_buf, strlen(sws_buf));
-
+	write(*(sws_session->fd), sws_buf, strlen(sws_buf));
+#endif
 }
 
