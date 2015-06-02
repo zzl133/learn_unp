@@ -6,15 +6,33 @@
 !_TAG_PROGRAM_VERSION	5.9~svn20110310	//
 BUF_SIZE	sws_work_process.c	14;"	d	file:
 CC	Makefile	/^CC = gcc$/;"	m
+FILE_FORBIDEN	sws_http_request.h	9;"	d
+FILE_MAX_SIZE	sws_http_request.h	16;"	d
+FILE_NOT_FOUND	sws_http_request.h	10;"	d
+FILE_OK	sws_http_request.h	8;"	d
+FILE_TOO_LARGE	sws_http_request.h	12;"	d
 MAXCLIENT	sws_work_process.c	15;"	d	file:
 OBJS	Makefile	/^OBJS = sws.o sws_work_process.o sws_http_request.o$/;"	m
+SEND_BUFFER_SIZE	sws_http_request.h	17;"	d
+UNALLOW_METHOD	sws_http_request.h	11;"	d
+UNSUPPORT_HTTP_VERSION	sws_http_request.h	15;"	d
+UNSUPPORT_MIME_TYPE	sws_http_request.h	14;"	d
+URI_SIZE	sws_http_request.c	12;"	d	file:
+URI_SIZE	sws_http_request.h	7;"	d
+URI_TOO_LONG	sws_http_request.h	13;"	d
 __SWS_HTTP_REQUEST_H__	sws_http_request.h	3;"	d
 __SWS_H__	sws.h	3;"	d
 __SWS_WORK_PROCESS_H__	sws_work_process.h	3;"	d
 buf	sws.h	/^	char *buf;$/;"	m	struct:__anon1
 fd	sws.h	/^    int  *fd;$/;"	m	struct:__anon1
 main	sws.c	/^int main ( void )$/;"	f
+sws_get_file_buf	sws_http_request.c	/^int sws_get_file_buf(char *sws_uri_buf, char *sws_file_buf)$/;"	f
+sws_get_mime_type	sws_http_request.c	/^char *sws_get_mime_type(char *sws_uri_buf)$/;"	f
+sws_get_send_buf	sws_http_request.c	/^sws_get_send_buf(char *sws_uri_buf, char *sws_send_buf, char *sws_file_buf, int count)$/;"	f
+sws_get_uri	sws_http_request.c	/^char *sws_get_uri(char *request_header, char *uri_buf)$/;"	f
 sws_init_socket	sws.c	/^int sws_init_socket(int *listen_fd, struct sockaddr_in *server_addr)$/;"	f
+sws_make_error_message	sws_http_request.c	/^sws_make_error_message(char *sws_send_buf, int errorno)$/;"	f
+sws_make_normal_message	sws_http_request.c	/^sws_make_normal_message(char *sws_uri_buf, char *sws_send_buf, char *sws_file_buf)$/;"	f
 sws_request_to_user	sws_http_request.c	/^void sws_request_to_user(sws_session_t *sws_session)$/;"	f
 sws_session_s	sws_work_process.c	/^sws_session_t sws_session_s[MAXCLIENT] = $/;"	v
 sws_session_t	sws.h	/^}sws_session_t;$/;"	t	typeref:struct:__anon1

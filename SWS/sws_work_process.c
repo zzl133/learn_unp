@@ -130,7 +130,6 @@ int sws_work_process(int *listen_fd)
 				ev.events = EPOLLOUT|EPOLLET;
 
 				epoll_ctl(epfd, EPOLL_CTL_MOD, client_fd, &ev);
-
 			}
 			else if (events[i].events & EPOLLOUT) 
 			{
@@ -158,7 +157,6 @@ int sws_work_process(int *listen_fd)
 				close(client_fd);
 
 				free(sws_session_s[index].buf);
-
 				sws_session_s[index].buf = NULL;
 				sws_session_s[index].fd = NULL;
 			}
