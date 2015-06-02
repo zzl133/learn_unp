@@ -165,7 +165,7 @@ char *sws_get_mime_type(char *sws_uri_buf)
 int 
 sws_get_send_buf(char *sws_uri_buf, char *sws_send_buf, char *sws_file_buf, int count)
 {
-	char *mime_type;
+	char *mime_type = NULL;
 	char *time_now;
 	time_t time_s;
 	char file_count[10] = {'\0'};
