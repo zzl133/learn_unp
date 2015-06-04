@@ -24,7 +24,7 @@ __SWS_HTTP_REQUEST_H__	sws_http_request.h	3;"	d
 __SWS_H__	sws.h	3;"	d
 __SWS_WORK_PROCESS_H__	sws_work_process.h	3;"	d
 buf	sws.h	/^	char *buf;$/;"	m	struct:__anon1
-fd	sws.h	/^    int  *fd;$/;"	m	struct:__anon1
+fd	sws.h	/^    int  fd;$/;"	m	struct:__anon1
 main	sws.c	/^int main ( void )$/;"	f
 sws_get_file_buf	sws_http_request.c	/^int sws_get_file_buf(char *sws_uri_buf, char *sws_file_buf)$/;"	f
 sws_get_mime_type	sws_http_request.c	/^char *sws_get_mime_type(char *sws_uri_buf)$/;"	f

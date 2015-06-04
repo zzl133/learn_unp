@@ -79,6 +79,9 @@ int sws_get_file_buf(char *sws_uri_buf, char *sws_file_buf)
 		perror("read()");
 	}
 
+	printf("file %s size : %lu, read: %d\n", sws_uri_buf, st_size, count);
+	close(fd);
+
 	return count;
 }
 
@@ -170,6 +173,7 @@ sws_get_send_buf(char *sws_uri_buf, char *sws_send_buf, char *sws_file_buf, int 
 	time_t time_s;
 	char file_count[10] = {'\0'};
 	int send_bytes;
+	int index = 0;
 
 	time_s = time(NULL);
 	time_now = ctime(&time_s);
@@ -182,17 +186,18 @@ sws_get_send_buf(char *sws_uri_buf, char *sws_send_buf, char *sws_file_buf, int 
 	strcat(sws_send_buf, "Server: sws webServer/Linux\r\n");
 	strcat(sws_send_buf, "Date:");
 	strcat(sws_send_buf, time_now);
-	//strcat(sws_send_buf, "\r\n");
-	strcat(sws_send_buf, "Content-Type:");
+	strcat(sws_send_buf, "Content-Type: ");
 	strcat(sws_send_buf, mime_type);
 	strcat(sws_send_buf, "\r\n");
-	strcat(sws_send_buf, "Content-Length:");
+	strcat(sws_send_buf, "Content-Length: ");
 	strcat(sws_send_buf, file_count);
 	strcat(sws_send_buf, "\r\n");
 	strcat(sws_send_buf, "\r\n");
-	strcat(sws_send_buf, sws_file_buf);
 
-	send_bytes = strlen(sws_send_buf);
+	index = strlen(sws_send_buf);/*图片中可能存在0x00,不能用strlen*/
+	memcpy(sws_send_buf + index, sws_file_buf, count);
+
+	send_bytes = index + count;
 
 	return send_bytes;
 }
@@ -212,7 +217,7 @@ sws_make_normal_message(char *sws_uri_buf, char *sws_send_buf, char *sws_file_bu
 	send_bytes = sws_get_send_buf(sws_uri_buf, sws_send_buf, \
 			sws_file_buf, read_count);
 	
-	return read_count;
+	return send_bytes;
 }
 
 int 
@@ -260,11 +265,10 @@ sws_make_error_message(char *sws_send_buf, int errorno)
 			break;
 
 	}
+
 	send_bytes = strlen(sws_send_buf);
 
 	return send_bytes;
-
-
 }
 
 void sws_request_to_user(sws_session_t *sws_session)
@@ -320,7 +324,7 @@ void sws_request_to_user(sws_session_t *sws_session)
 	printf("sws_send_buf = %s\n", sws_send_buf);
 #endif
 
-	write(*(sws_session->fd), sws_send_buf, strlen(sws_send_buf));
+	write(sws_session->fd, sws_send_buf, send_bytes);
 
 #if 0
 	char sws_buf[1024];

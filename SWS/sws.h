@@ -4,7 +4,7 @@
 
 typedef struct
 {
-    int  *fd;
+    int  fd;
 	char *buf;
 }sws_session_t;
 

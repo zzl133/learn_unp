@@ -16,7 +16,7 @@
 
 sws_session_t sws_session_s[MAXCLIENT] = 
 {
-	{NULL, NULL}
+	{0, NULL}
 };
 
 int sws_setnonblocking(int listen_fd)
@@ -76,7 +76,9 @@ int sws_work_process(int *listen_fd)
 		{
 			if(events[i].data.fd == *listen_fd)
 			{
-				conn_fd = accept(*listen_fd, (struct sockaddr*)&client_addr, &sin_size);
+				conn_fd = accept(*listen_fd, \
+					(struct sockaddr*)&client_addr, \
+					&sin_size);
 
 				while(conn_fd > 0)
 				{
@@ -85,8 +87,9 @@ int sws_work_process(int *listen_fd)
 
 					epoll_ctl(epfd, EPOLL_CTL_ADD, conn_fd, &ev);
 
-					conn_fd = accept(*listen_fd, (struct sockaddr*)&client_addr, \
-						   	&sin_size);
+					conn_fd = accept(*listen_fd, \
+						(struct sockaddr*)&client_addr, \
+						&sin_size);
 				}
 			}
 			else if (events[i].events & EPOLLIN) 
@@ -98,33 +101,13 @@ int sws_work_process(int *listen_fd)
 				//printf("%s\n", buf);
 #endif
 
-				/*deal the request*/
-				index = 0;
-
 				char *message_buf = (char*)malloc(BUF_SIZE);
 
 				read(client_fd, buf, sizeof(buf));
 				memcpy(message_buf, buf, strlen(buf));
-				/*printf("%s\n", message_buf);*/
 
-
-				while(index < MAXCLIENT)
-				{
-					if (sws_session_s[index].fd == NULL && sws_session_s[index].buf == NULL)
-					{
-						sws_session_s[index].fd = &client_fd;
-						sws_session_s[index].buf = message_buf; 
-
-						break;
-					}
-
-					index++;
-
-					if (index > MAXCLIENT)
-					{
-						index = 0;
-					}
-				}
+				sws_session_s[client_fd].fd = client_fd;
+				sws_session_s[client_fd].buf = message_buf;
 
 				ev.data.fd = client_fd;
 				ev.events = EPOLLOUT|EPOLLET;
@@ -134,21 +117,8 @@ int sws_work_process(int *listen_fd)
 			else if (events[i].events & EPOLLOUT) 
 			{
 				client_fd = events[i].data.fd;
-				
-                /*deal the response*/
-				index = 0;
 
-				while(index < MAXCLIENT)
-				{
-					if(*(sws_session_s[index].fd) == client_fd)
-					{
-						sws_request_to_user(&sws_session_s[index]);
-
-						break;
-					}
-
-					index++;
-				}
+				sws_request_to_user(&sws_session_s[client_fd]);
 
 				ev.data.fd = client_fd;
 
@@ -158,7 +128,7 @@ int sws_work_process(int *listen_fd)
 
 				free(sws_session_s[index].buf);
 				sws_session_s[index].buf = NULL;
-				sws_session_s[index].fd = NULL;
+				sws_session_s[index].fd = 0;
 			}
 		}
 	}
